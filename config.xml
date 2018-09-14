@@ -27,5 +27,5 @@
 	<permission name="fileSystem" />
 	<permission name="internet" />
 	<permission name="bootCompleted" />
-	<permission name="hardware" />
+	<permission name="hardware" />  <feature name="bMap">    <param name="android_api_key" value="iUpuvOeWjqikxjxjWsVOAuG1"/>    <param name="ios_api_key" value="SrhUkSjGAdUUZTn1vvja7ZQ8"/>  </feature>  <!--激光推送-->  <feature name="ajpush">        <!--  <param name="app_key" value="e030eda797a33d0c84e8499a" />          <param name="channel" value="developer-apicloud" />-->          <param name="app_key" value="3f8e1d307fa1ac7212e14f40" />            <param name="channel" value="zhyllj" />  </feature>
 </widget>

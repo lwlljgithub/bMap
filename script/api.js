@@ -1,5 +1,5 @@
 /*
- * APICloud JavaScript Library
+ * APP3C JavaScript Library
  * Copyright (c) 2014 apicloud.com
  */
 (function(window){
@@ -175,7 +175,7 @@
         var isSame = function(doms, el){
             var i = 0, len = doms.length;
             for(i; i<len; i++){
-                if(doms[i].isSameNode(el)){
+                if(doms[i].isEqualNode(el)){
                     return doms[i];
                 }
             }
@@ -289,9 +289,9 @@
             el.classList.toggle(cls);
         }else{
             if(u.hasCls(el, cls)){
-                u.removeCls(el, cls);
-            }else{
                 u.addCls(el, cls);
+            }else{
+                u.removeCls(el, cls);
             }
         }
         return el;
@@ -474,31 +474,31 @@
             ls.clear();
         }
     };
+
+   
+    /*by king*/
     u.fixIos7Bar = function(el){
-        return u.fixStatusBar(el);
-    };
-    u.fixStatusBar = function(el){
         if(!u.isElement(el)){
-            console.warn('$api.fixStatusBar Function need el param, el param must be DOM Element');
-            return 0;
+            console.warn('$api.fixIos7Bar Function need el param, el param must be DOM Element');
+            return;
         }
-        el.style.paddingTop = api.safeArea.top + 'px';
-        return el.offsetHeight;
-    };
-    u.fixTabBar = function(el){
-        if(!u.isElement(el)){
-            console.warn('$api.fixTabBar Function need el param, el param must be DOM Element');
-            return 0;
+        var strDM = api.systemType;
+        if (strDM == 'ios') {
+            var strSV = api.systemVersion;
+            var numSV = parseInt(strSV,10);
+            var fullScreen = api.fullScreen;
+            var iOS7StatusBarAppearance = api.iOS7StatusBarAppearance;
+            if (numSV >= 7 && !fullScreen && iOS7StatusBarAppearance) {
+                el.style.paddingTop = '20px';
+            }
         }
-        el.style.paddingBottom = api.safeArea.bottom + 'px';
-        return el.offsetHeight;
     };
     u.toast = function(title, text, time){
         var opts = {};
         var show = function(opts, time){
             api.showProgress(opts);
             setTimeout(function(){
-                api.hideProgress();
+                $api.hideProgress();
             },time);
         };
         if(arguments.length === 1){
@@ -580,7 +580,129 @@
             }
         );
     };
-
+    u.thisActive = function( tag ){
+		var eP = tag.parentNode.querySelectorAll( tag.tagName ),
+            index ;
+		for( var x in eP ){
+				if( eP[x].nodeType ){
+					if( eP[x] === tag ){
+						$api.addCls(  eP[x], 'active' );
+                        index = x;
+					}else{
+						$api.removeCls(  eP[x], 'active' );
+					};
+				};
+		};
+        return index;
+    };
+    
+    u.ajax = function( url, method, bodyParam, callBack ){
+		var appId="A6981075723139";
+		var key="F2775A7D-18E5-E6E7-F766-2B793DBDB153";
+		var timec=new Date().getTime();
+		var appKey=SHA1(appId+"UZ"+key+"UZ"+timec)+"."+timec;
+		if( url.indexOf( 'logout' ) != -1 || url == '/user' ){
+			var headers = {
+				"Content-type": "application/json;charset=UTF-8",
+				"X-APICloud-AppId": appId,
+				"X-APICloud-AppKey": appKey,
+				"authorization": $api.getStorage('accessToken')
+			}
+		}else{
+			var headers = {
+				"Content-type": "application/json;charset=UTF-8",
+				"X-APICloud-AppId": appId,
+				"X-APICloud-AppKey": appKey
+			}
+		}
+		api.ajax({
+			url: 'https://d.apicloud.com/mcm/api' + url,
+			method: method,
+			cache: false,
+			timeout: 20,
+			headers: headers,
+			data: {
+				body: bodyParam
+			}
+		}, function (ret, err) {
+			callBack(ret, err);
+		});
+    };
+    
+    u.toast = function( msg, delay ){
+		api.toast({
+			msg: msg,
+			duration: delay || 2000,
+			location: 'bottom'
+		});
+    };
+    
+    u.showProgress = function( obj ){
+        api.openFrame({
+            name: 'loading',
+            url: api.winName =='root' ? './html/loading.html' : './loading.html'
+        });
+    };
+    
+    u.hideProgress = function( obj ){
+        api.closeFrame({
+            name: 'loading'
+        });
+    };
+    
+    u.empty = function(){
+        this.toast('此功能正在开发…');
+    }
+    
+    u.skin = function(){
+		
+		/*
+		
+		api.addEventListener({
+			name: 'skin'
+		}, function(ret, err){
+			if ( ret.value.skin ){
+                document.querySelector('body').classList.add( 'black');
+                api.setWinAttr({
+                    bgColor: '#252525'
+                });
+                api.setFrameAttr({
+                    bgColor: '#252525'
+                });
+			}else{
+                document.querySelector('body').classList.remove( 'black' );
+                api.setWinAttr({
+                    bgColor: 'grba(0,0,0,0)'
+                });
+                api.setFrameAttr({
+                    bgColor: 'grba(0,0,0,0)'
+                });
+			}
+		});
+		api.getPrefs({
+			key: 'skin'
+		}, function(ret, err){
+			if ( ret.value ){
+                document.querySelector('body').classList.add( 'black' );
+                api.setWinAttr({
+                    bgColor: '#252525'
+                });
+                api.setFrameAttr({
+                    bgColor: '#252525'
+                });
+                if( document.querySelector('.skin-bth') )  document.querySelector('.skin-bth').checked = true;
+			}else{
+                document.querySelector('body').classList.remove( 'black' );
+                api.setWinAttr({
+                    bgColor: 'grba(0,0,0,0)'
+                });
+                api.setFrameAttr({
+                    bgColor: 'grba(0,0,0,0)'
+                });
+            }
+		});
+		*/
+    };
 /*end*/
     
 
